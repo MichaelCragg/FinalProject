@@ -1,1 +1,49 @@
+int led = D7; // Uses inbuilt LED
+int pushButton = D1; // Push button is connected to D1
 
+void TurnOn(const char *event, const char *data){    
+    
+    digitalWrite(led, 1);   // D7 On
+    delay(5000);
+    digitalWrite(led, 0); //D7 off
+
+}  
+
+
+// This routine runs only once upon reset
+void setup() 
+{
+  pinMode(led, OUTPUT); // Initialize D7 pin as output
+  pinMode(pushButton, INPUT_PULLDOWN); 
+ // Particle.subscribe("TextIsReceived", TurnOn, MY_DEVICES);  
+  Particle.subscribe("TextIsReceived", TurnOn, MY_DEVICES);
+
+  // Initialize D1 pin as input with an internal pull-up resistor
+}
+
+// This routine loops forever
+void loop() 
+{
+  int pushButtonState; 
+
+  pushButtonState = digitalRead(pushButton);
+
+  if(pushButtonState == HIGH) 
+  { // If we push down on the push button
+    digitalWrite(led, HIGH);  // Turn ON the LED
+    Spark.publish("pushButtonState","Pressed",60,PRIVATE);
+    // Add a delay to prevent getting tons of emails from IFTTT
+    delay(5000); 
+  }
+  else
+  {
+    digitalWrite(led, LOW);   // Turn OFF the LED 
+  }
+
+
+}
+
+
+
+
+//Particle.subscribe("my-lamp-on5555", myLampFunction, MY_DEVICES);
